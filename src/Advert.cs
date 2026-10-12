@@ -72,6 +72,12 @@ public class Advert : BasePlugin
 
     public override void UseSharedInterface(IInterfaceManager interfaceManager)
     {
+        if (!_config.UseAudioPlugin)
+        {
+            _audioApi = null;
+            return;
+        }
+
         if (!interfaceManager.HasSharedInterface("audio"))
         {
             Core.Logger.LogWarning("Audio shared interface not found. Install/enable the 'Audio' plugin.");
@@ -319,7 +325,7 @@ public class Advert : BasePlugin
 
     private void SoundAdvertising(string soundPath)
     {
-        if (_audioApi == null) return;
+        if (!_config.UseAudioPlugin || _audioApi == null) return;
         if (string.IsNullOrWhiteSpace(soundPath)) return;
 
         var resolvedPath = ResolvePath(soundPath);
@@ -432,6 +438,8 @@ public class ConfigModel
 
     // Center refresh gyakoriság (sec) – 1.0–2.0 ajánlott
     public float CenterRefreshEvery { get; set; } = 1.0f;
+
+    public bool UseAudioPlugin { get; set; } = true;
 
     public float Volume { get; set; } = 0.5f;
 
